@@ -1,0 +1,26 @@
+{
+    "name": "madman/bchat",
+    "description": "Backend chat using massage broker",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yuriy Prokopets",
+            "email": "yuriy.prokopets@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php-amqplib/php-amqplib": "2.6.*",
+        "silex/silex": "~2.0",
+        "knplabs/console-service-provider": "^2.1"
+    },
+    "autoload": {
+       "psr-4": {
+            "BChat\\": "src/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
