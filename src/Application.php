@@ -13,14 +13,28 @@ class Application extends \Silex\Application {
 		$this['debug'] = $debug;
 
 		$this->registerProviders();
+		$this->registerControllers();
 	}
 
 	protected function registerProviders()
 	{
 		$this->register(new ConsoleServiceProvider(), [
-			'console.name' => 'bchat';
-        	'console.version' => '0.0.1';
+			'console.name' => 'bchat',
+        	'console.version' => '0.0.1',
 		]);
+
+		$this->register(new \Silex\Provider\TwigServiceProvider(), [
+    		'twig.path' => __DIR__.'/../app/Resources/views',
+		]);
+	}
+
+	protected function registerControllers()
+	{
+		$app = $this;
+
+		$this->get('/', function () use ($app) {
+  			return $app['twig']->render('base.html.twig');
+		});
 	}
 	
 }

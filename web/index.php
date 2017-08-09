@@ -8,10 +8,5 @@ if ('cli-server' === php_sapi_name()) {
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$app = new BChat\Application(false);
-
-$app->get('/', function () use ($app) {
-  return 'Hello, World!';
-});
-
+$app = new BChat\Application(true);
 $app->run();
