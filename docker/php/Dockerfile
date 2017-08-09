@@ -64,6 +64,7 @@ RUN \
 RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
 
 COPY supervisord.conf /etc/supervisord.conf
+COPY php.ini /etc/php.ini
 
 RUN mkdir -p /var/log/supervisor
 RUN mkdir -p /var/run/php5-fpm
