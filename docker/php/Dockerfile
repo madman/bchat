@@ -45,6 +45,7 @@ RUN sed -i "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" /etc/php5/php.i
 
 ###############
 RUN apk add php5-cli
+RUN apk add --update php5-bcmath
 
 ENV PHP_MEMORY_LIMIT    64M
 ENV MAX_UPLOAD          5M

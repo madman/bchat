@@ -4,3 +4,10 @@
 bin/*
 !bin/console
 !bin/init
+
+var/*
+!var/logs
+var/logs/*
+!var/logs/supervisord/
+var/logs/supervisord/*
+!var/logs/supervisord/.gitkeep

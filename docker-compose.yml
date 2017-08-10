@@ -7,6 +7,7 @@ files:
   image: alpine:3.4
   volumes:
     - .:/data/www/site
+    - ./var/logs:/var/logs
   command: /bin/ash
 
 
@@ -18,6 +19,8 @@ chat1:
     - files
   links: 
    - rabbit
+  environment:
+   - QUEUE=chat1
 
 chat2:
   build: ./docker/php
@@ -27,6 +30,9 @@ chat2:
     - files    
   links: 
    - rabbit
+  environment:
+   - QUEUE=chat2
+
 
 chat3:
   build: ./docker/php
@@ -36,6 +42,8 @@ chat3:
     - files    
   links: 
    - rabbit
+  environment:
+   - QUEUE=chat3
 
 rabbit:
   image: rabbitmq:management-alpine
