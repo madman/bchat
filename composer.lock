@@ -4,58 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b967706a6f2c4f6f0bdec89672a9c9ec",
-    "content-hash": "a3c191a4a63c72dd02fb45cd7290b0bb",
+    "hash": "a868b3f27f61ae574376b58f0ed2fc9c",
+    "content-hash": "af1e2794998bcd5188a22ca2c20b20e9",
     "packages": [
-        {
-            "name": "exs/silex-rabbitmq-provider",
-            "version": "dev-master",
-            "target-dir": "EXS/RabbitmqProvider",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ExSituMarketing/EXS-silex-rabbitmq-provider.git",
-                "reference": "6ecba572fd69b5e14130fdebb21df419b0a784a8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ExSituMarketing/EXS-silex-rabbitmq-provider/zipball/6ecba572fd69b5e14130fdebb21df419b0a784a8",
-                "reference": "6ecba572fd69b5e14130fdebb21df419b0a784a8",
-                "shasum": ""
-            },
-            "require": {
-                "silex/silex": "~2.0@dev"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "EXS\\RabbitmqProvider": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "slee",
-                    "email": "lee@ex-situ.com"
-                }
-            ],
-            "description": "Rabbitmq message provider bundle for Silex2",
-            "homepage": "https://github.com/ExSituMarketing/EXS-silex-rabbitmq-provider",
-            "keywords": [
-                "message",
-                "provider",
-                "rabbitmq",
-                "silex"
-            ],
-            "time": "2015-07-23 17:05:02"
-        },
         {
             "name": "knplabs/console-service-provider",
             "version": "dev-master",
@@ -114,16 +65,16 @@
         },
         {
             "name": "php-amqplib/php-amqplib",
-            "version": "v2.6.3",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-amqplib/php-amqplib.git",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6"
+                "reference": "f48748546e398d846134c594dfca9070c4c3b356"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/fa2f0d4410a11008cb36b379177291be7ee9e4f6",
-                "reference": "fa2f0d4410a11008cb36b379177291be7ee9e4f6",
+                "url": "https://api.github.com/repos/php-amqplib/php-amqplib/zipball/f48748546e398d846134c594dfca9070c4c3b356",
+                "reference": "f48748546e398d846134c594dfca9070c4c3b356",
                 "shasum": ""
             },
             "require": {
@@ -180,7 +131,7 @@
                 "queue",
                 "rabbitmq"
             ],
-            "time": "2016-04-11 14:30:01"
+            "time": "2017-08-03 22:06:21"
         },
         {
             "name": "pimple/pimple",
@@ -1037,9 +988,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "exs/silex-rabbitmq-provider": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

@@ -11,11 +11,10 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php-amqplib/php-amqplib": "2.6.*",
+        "php-amqplib/php-amqplib": "^2.6",
         "silex/silex": "~2.0",
         "knplabs/console-service-provider": "^2.1",
-        "symfony/twig-bridge": "^3.3",
-        "exs/silex-rabbitmq-provider": "^1.0@dev"
+        "symfony/twig-bridge": "^3.3"
     },
     "autoload": {
        "psr-4": {
