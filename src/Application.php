@@ -13,15 +13,17 @@ class Application extends \Silex\Application {
         parent::__construct();
 
         $this['debug'] = $debug;
+        $this['name'] = getenv('QUEUE');
 
         $this->registerProviders();
         $this->registerControllers();
+        $this->registerCommands();
     }
 
     protected function registerProviders()
     {
         $this->register(new ConsoleServiceProvider(), [
-            'console.name' => 'bchat',
+            'console.name' => $this['name'],
             'console.version' => '0.0.1',
         ]);
 
@@ -29,22 +31,15 @@ class Application extends \Silex\Application {
             'twig.path' => __DIR__.'/../app/Resources/views',
         ]);
 
-        $this->register(new \EXS\RabbitmqProvider\Providers\Services\RabbitmqProvider(), [
-            'rabbit.connections' => [
-                'default' => [
-                    'host' => 'rabbit',
-                    'port' => 5672,
-                    'user' => $_ENV["RABBIT_ENV_RABBITMQ_DEFAULT_USER"],
-                    'password' => $_ENV["RABBIT_ENV_RABBITMQ_DEFAULT_PASS"],
-                    'vhost' => $_ENV["RABBIT_ENV_RABBITMQ_DEFAULT_VHOST"],
-                ]
+        $this->register(new Provider\AmqpProvider(), [
+            'amqp.connection' => [
+                'host' => 'rabbit',
+                'port' => 5672,
+                'user' => getenv("RABBIT_ENV_RABBITMQ_DEFAULT_USER"),
+                'password' => getenv("RABBIT_ENV_RABBITMQ_DEFAULT_PASS"),
+                'vhost' => getenv("RABBIT_ENV_RABBITMQ_DEFAULT_VHOST"),
+
             ],
-            'exs.rabbitmq.env' => [
-                'exchange' => 'messages',
-                'type' => 'direct',
-                'queue' => 'messages',
-                'key' => 'messages',
-            ]
         ]);
     }
 
@@ -57,10 +52,22 @@ class Application extends \Silex\Application {
         });
 
         $this->post('/say', function (Request $request) use ($app) {
-            $message = $request->get('message');
+            $message = trim($request->get('message'));
 
-            return $app->json(['message' => $message]);
+            if ($message) {
+
+                $app['amqp']->publish($message);
+
+                return $app->json(['message' => $message]);
+            }
+
+            return $app->json(['error' => 'No message!'], 500);
         });
+    }
+
+    protected function registerCommands()
+    {
+        $this['console']->add(new \BChat\Command\Consumer());
     }
     
 }
