@@ -16,22 +16,30 @@
         </head>
         <body>
             <div class="container">
-                {% block body %}
-                    <div class="jumbotron">
-                        <h1>BChat</h1>
-                        <p>Simple backend chat using RabbitMq</p>
-                        <div class="row">
-                          <div class="col-lg-6">
+            {% block body %}
+                <div class="jumbotron">
+                    <h1>BChat</h1>
+                    <p>Simple backend chat using RabbitMq</p>
+                    <div class="row">
+                        <div class="col-lg-6">
                             <div class="input-group">
-                              <input id="message" type="text" class="form-control" placeholder="Hello, world!">
-                              <span class="input-group-btn">
-                                <button class="btn btn-primary" type="button" id="say">Say</button>
-                            </span>
+                                <input id="message" type="text" class="form-control" placeholder="Hello, world!">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" id="say">Say</button>
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </div>        
+                    </div> 
+                </div>
+                <div class="row">
+                    <ul>
+                        {% for message in messages %}
+                            <li>{{ message|e }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
             {% endblock %}
-        </div>
+            </div>
 
         {% block javascripts %}
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

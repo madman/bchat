@@ -41,6 +41,13 @@ class Application extends \Silex\Application {
 
             ],
         ]);
+
+        $this->register(new \Predis\Silex\ClientServiceProvider(), [
+            'predis.parameters' => 'tcp://127.0.0.1:6379',
+            'predis.options'    => [
+                'profile' => '3.0',
+            ]
+        ]);
     }
 
     protected function registerControllers()
@@ -48,7 +55,10 @@ class Application extends \Silex\Application {
         $app = $this;
 
         $this->get('/', function () use ($app) {
-            return $app['twig']->render('base.html.twig');
+
+            $messages = $app['predis']->lrange('chat', 0, 10);
+
+            return $app['twig']->render('base.html.twig', ['messages' => $messages]);
         });
 
         $this->post('/say', function (Request $request) use ($app) {

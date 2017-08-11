@@ -41,9 +41,8 @@ RUN apk update && \
                 php5-dom \
                 php5-zlib
 
-RUN sed -i "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" /etc/php5/php.ini
 
-###############
+# PHP
 RUN apk add php5-cli
 RUN apk add --update php5-bcmath
 
@@ -52,23 +51,30 @@ ENV MAX_UPLOAD          5M
 ENV PHP_MAX_FILE_UPLOAD 5
 ENV PHP_MAX_POST        25M
 
-RUN apk add supervisor
-
-# 
 RUN \
+    sed -i "s|;*date.timezone =.*|date.timezone = ${TIMEZONE}|i" /etc/php5/php.ini && \
     sed -i "s|;*memory_limit =.*|memory_limit = ${PHP_MEMORY_LIMIT}|i" /etc/php5/php.ini && \
     sed -i "s|;*upload_max_filesize =.*|upload_max_filesize = ${MAX_UPLOAD}|i" /etc/php5/php.ini && \
     sed -i "s|;*max_file_uploads =.*|max_file_uploads = ${PHP_MAX_FILE_UPLOAD}|i" /etc/php5/php.ini && \
     sed -i "s|;*post_max_size =.*|post_max_size = ${PHP_MAX_POST}|i" /etc/php5/php.ini && \
     sed -i "s|;*cgi.fix_pathinfo=.*|cgi.fix_pathinfo= 0|i" /etc/php5/php.ini
 
-RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
+RUN mkdir -p /var/run/php5-fpm    
+
+# redis
+RUN apk add --update redis
+
+COPY redis.conf /etc/redis.conf
+COPY redis-local.conf /etc/redis-local.conf
+
+# supervisord
+RUN apk add supervisor
 
 COPY supervisord.conf /etc/supervisord.conf
-COPY php.ini /etc/php.ini
 
-RUN mkdir -p /var/log/supervisor
-RUN mkdir -p /var/run/php5-fpm
+
+### clear
+RUN rm -rf /var/cache/apk/* && rm -rf /tmp/*
 
 WORKDIR /data/www/site
 

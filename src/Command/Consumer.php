@@ -25,7 +25,8 @@ class Consumer extends Command {
         while(true) {
         	$output->writeln('Start listen: ' . $app['name']);
 
-        	$cb = function($message) use ($output) {
+        	$cb = function($message) use ($output, $app) {
+                $app['predis']->lpush('chat', $message->body);
         		$output->writeln($message->body);
         	};
 
