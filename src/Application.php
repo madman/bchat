@@ -55,23 +55,43 @@ class Application extends \Silex\Application {
         $app = $this;
 
         $this->get('/', function () use ($app) {
-
-            $messages = $app['predis']->lrange('chat', 0, 10);
-
-            return $app['twig']->render('base.html.twig', ['messages' => $messages]);
+            return $app['twig']->render('base.html.twig');
         });
 
         $this->post('/say', function (Request $request) use ($app) {
             $message = trim($request->get('message'));
 
             if ($message) {
+                $post = [
+                    'message' => $message,
+                    'date' => date('Y-m-d H:i:s'),
+                    'author' => $app['name'],
+                ];
 
-                $app['amqp']->publish($message);
+                $msg = json_encode($post);
 
-                return $app->json(['message' => $message]);
+                $app['amqp']->publish($msg);
+
+                return $app->json(['post' => $post, 'msg' => $msg]);
             }
 
             return $app->json(['error' => 'No message!'], 500);
+        });
+
+        $this->get('/last/{num}', function($num) use ($app) {
+
+            $num = (int)$num;
+            $num = ($num > 0) ? $num : 10;
+
+
+            $posts = $app['predis']->lrange('chat', 0, $num);
+
+            foreach ($posts as &$post) {
+                $post  = json_decode($post);
+            }
+            $all = $app['predis']->llen('chat');
+
+            return $app->json(['posts' =>  $posts, 'all' => $all]);
         });
     }
 

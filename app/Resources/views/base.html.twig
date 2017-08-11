@@ -32,10 +32,7 @@
                     </div> 
                 </div>
                 <div class="row">
-                    <ul>
-                        {% for message in messages %}
-                            <li>{{ message|e }}</li>
-                        {% endfor %}
+                    <ul id="chat">
                     </ul>
                 </div>
             {% endblock %}
@@ -44,6 +41,31 @@
         {% block javascripts %}
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
             <script>
+                var refresh = function() {
+                    $.ajax({
+                        url: "/last/10?"
+                    }).done(function(data) {
+                        var ul = $('ul#chat');
+
+                        ul.empty();
+
+                        if (data.posts) {
+                            $.each(data.posts, function(index, post) {
+                                if (jQuery.type( post ) === "string") {
+                                    ul.append($('<li />').text(post));
+                                } else {
+                                    /**
+                                     * message, date, author
+                                     */
+                                    ul.append($('<li />').text(post.author + ' (' + post.date + '): ' + post.message));
+                                }
+                            });                            
+                        }    
+                    }).error(function() {
+                        console.log('error');
+                    });
+                }
+
                 $(function() {
                     $('#say').click(function(e) {
                         var input = $("#message");
@@ -59,7 +81,9 @@
                         }).error(function() {
                             console.log('error');
                         });
-                  });
+                    });
+
+                    setInterval(refresh, 300);
 
                 });
             </script>
