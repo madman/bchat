@@ -1,2 +1,10 @@
 # bchat
-Simple backend chat using RabbitMQ
+Простенький backend-чат на основі RabbitMQ
+
+## Навіщо?
+
+Створений як тестова площадка, щоб повправлятися з RabbitMQ
+
+## Як користуватися?
+
+Дивимося в docker-compose.yml, там все прописано.
