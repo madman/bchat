@@ -8,63 +8,64 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 class AmqpService {
 
-	const EXCHANGE = 'chat';
+    const EXCHANGE = 'chat';
 
-	/**
-	 * @var AMQPStreamConnection
-	 */
-	protected $_connection;
-	protected $_channel;
+    const NO_ACK = true;
+    const ACK = false;
 
-	public function __construct($host, $port, $user, $password, $vhost)
-	{
-		$this->_connection = new AMQPStreamConnection($host, $port, $user, $password, $vhost);
-		$this->_channel = $this->_connection->channel();
-	}
+    /**
+     * @var AMQPStreamConnection
+     */
+    protected $_connection;
+    protected $_channel;
 
-	public function publish($text)
-	{
-		
-		$this->_channel->exchange_declare(static::EXCHANGE, 'fanout', false, false, false);
+    public function __construct($host, $port, $user, $password, $vhost)
+    {
+        $this->_connection = new AMQPStreamConnection($host, $port, $user, $password, $vhost);
+        $this->_channel = $this->_connection->channel();
+    }
 
-		$message = new AMQPMessage($text, [
-			'content_type' => 'text/plain',
-			'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
-		]);
+    public function publish($text)
+    {
+        $this->_channel->exchange_declare(static::EXCHANGE, 'fanout', false, false, false);
 
-		$this->_channel->basic_publish($message, static::EXCHANGE);
-	}
+        $message = new AMQPMessage($text, [
+            'content_type' => 'text/plain',
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]);
 
-	public function consume($queue, $callback)
-	{
-		$this->_channel->exchange_declare(static::EXCHANGE, 'fanout', false, false, false);
+        $this->_channel->basic_publish($message, static::EXCHANGE);
+    }
 
-		$this->_channel->queue_declare($queue, false, false, true, false);
+    public function consume($queue, $callback)
+    {
+        $this->_channel->exchange_declare(static::EXCHANGE, 'fanout', false, false, false);
+        $this->_channel->queue_declare($queue, false, false, false, false);
+        $this->_channel->queue_bind($queue, static::EXCHANGE);
 
-		$this->_channel->queue_bind($queue, static::EXCHANGE);
+        /**
+         * @param \PhpAmqpLib\Message\AMQPMessage $message
+         */
+        $cb = function($message) use ($callback) {
+            $proccessed = call_user_func($callback, $message);
 
+            if ($proccessed) {
+                $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+            }
+        };
 
-		/**
-		 * @param \PhpAmqpLib\Message\AMQPMessage $message
-		 */
-		$cb = function($message) use ($callback) {
-  			call_user_func($callback, $message);
-
-  			//$message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
-		};
-
-		$this->_channel->basic_consume($queue, '', false, true, false, false, $cb);
+        $this->_channel->basic_consume($queue, $queue, false, self::ACK, false, false, $cb);
 
         while(count($this->_channel->callbacks)) {
             $this->_channel->wait();
-        }		
+        }
 
-	}
+    }
 
-	public function __destruct()
-	{
-		$this->_channel->close();
-		$this->_connection->close();
-	}
+    public function __destruct()
+    {
+        $this->_channel->close();
+        $this->_connection->close();
+    }
 
 }

@@ -5,6 +5,7 @@ namespace BChat\Command;
 use Knp\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Predis\CommunicationException;
 
 class Consumer extends Command {
 
@@ -26,8 +27,15 @@ class Consumer extends Command {
         	$output->writeln('Start listen: ' . $app['name']);
 
         	$cb = function($message) use ($output, $app) {
-                $app['predis']->lpush('chat', $message->body);
-        		$output->writeln($message->body);
+                try {
+                    $app['predis']->lpush('chat', $message->body);
+                    $output->writeln('Proccesed: ' . $message->body);
+
+                    return true;
+                } catch (CommunicationException $e) {
+                    $output->writeln('Failed: ' . $message->body);
+                    return false;
+                }
         	};
 
         	$app['amqp']->consume($app['name'], $cb);
